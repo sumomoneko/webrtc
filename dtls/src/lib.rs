@@ -27,6 +27,7 @@ pub mod state;
 use cipher_suite::*;
 pub use error::Error;
 use extension::extension_use_srtp::SrtpProtectionProfile;
+pub use rustls::KeyLog;
 
 pub(crate) fn find_matching_srtp_profile(
     a: &[SrtpProtectionProfile],

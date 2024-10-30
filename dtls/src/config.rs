@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use rustls::KeyLog;
 use tokio::time::Duration;
 
 use crate::cipher_suite::*;
@@ -100,6 +101,8 @@ pub struct Config {
     /// Packet with sequence number older than this value compared to the latest
     /// accepted packet will be discarded. (default is 64)
     pub replay_protection_window: usize,
+
+    pub key_log: Option<Arc<dyn KeyLog>>,
 }
 
 impl Default for Config {
@@ -123,6 +126,8 @@ impl Default for Config {
             server_name: String::default(),
             mtu: 0,
             replay_protection_window: 0,
+
+            key_log: None,
         }
     }
 }
