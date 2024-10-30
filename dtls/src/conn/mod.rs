@@ -411,6 +411,23 @@ impl DTLSConn {
 
         trace!("Handshake Completed");
 
+        if let Some(key_log) = &config.key_log {
+            let client_random = {
+                let mut cr = vec![];
+                {
+                    let mut writer = BufWriter::<&mut Vec<u8>>::new(cr.as_mut());
+                    if c.state.is_client {
+                        let _ = c.state.local_random.marshal(&mut writer);
+                    } else {
+                        let _ = c.state.remote_random.marshal(&mut writer);
+                    }
+                }
+                cr
+            };
+
+            key_log.log("CLIENT_RANDOM", &client_random, &c.state.master_secret);
+        }
+
         Ok(c)
     }
 
