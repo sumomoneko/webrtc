@@ -176,6 +176,15 @@ impl ListenConfig {
                             }
                         }
                         Err(err) => {
+                            if let Error::Io(err) = &err {
+                                if let Some(os_error) = err.0.raw_os_error() {
+                                    if cfg!(windows) && os_error == 10054 {
+                                        log::warn!("Receive Port Unreachable from peer");
+                                        continue;
+                                    }
+                                }
+                            }
+
                             log::warn!("ListenConfig pconn.recv_from error: {}", err);
                             break;
                         }
